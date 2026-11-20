@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PayCheck Mock-up · Team T03</title>
+<meta name="description" content="COMP3059 Sprint 4 interactive mock-up of PayCheck: worker app, clinic workspace and admin console.">
+<style>*{box-sizing:border-box}
+:root{--g9:#0F3D2E;--g7:#1F7A55;--g1:#EEF5F1;--g2:#CDE7D9;--gold:#F2B705;--goldbg:#FFF4D6;--red:#B3372C;--redbg:#FBEDEB;--ink:#17211C;--mut:#4F5E56;--line:#D5E2DA;--bg:#F4F7F5}
+html,body{margin:0;background:#E4EBE7;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);font-size:14px}
+button{font-family:inherit;cursor:pointer;font-size:inherit}
+input,select,textarea{font-family:inherit;font-size:15px}
+a{color:var(--g7)}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+/* top demo bar */
+.demobar{position:sticky;top:0;z-index:20;background:var(--ink);color:#fff;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:8px 16px}
+.demobar .brand{display:flex;align-items:center;gap:8px;font-weight:700}
+.demobar .roles{display:flex;gap:6px;flex-wrap:wrap}
+.demobar button{border:1px solid #5E6B64;background:transparent;color:#fff;border-radius:8px;padding:6px 12px;font-weight:600}
+.demobar button.on{background:var(--gold);color:var(--ink);border-color:var(--gold)}
+.chk{width:26px;height:26px;border-radius:7px;background:var(--gold);color:var(--g9);display:inline-flex;align-items:center;justify-content:center;font-weight:800}
+/* landing */
+.landing{max-width:1040px;margin:0 auto;padding:32px 20px 60px}
+.landing h1{font-size:34px;margin:8px 0;color:var(--g9)}
+.lead{font-size:16px;color:var(--mut);max-width:760px;line-height:1.5}
+.cards3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin:24px 0}
+.rolecard{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:10px;text-align:left}
+.rolecard h3{margin:0;font-size:19px}
+.rolecard ul{margin:0;padding-left:18px;color:var(--mut);line-height:1.55}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:13px}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;white-space:nowrap}
+.t-high{background:var(--g9);color:#fff}.t-med{background:var(--gold);color:var(--ink)}.t-fut{background:#E1E6E3;color:#4F5E56}
+.t-ok{background:#E3F1E9;color:#155C3F}.t-bad{background:var(--redbg);color:#8E2A20}.t-warn{background:var(--goldbg);color:#6B4E00}
+/* phone */
+.stage{display:flex;justify-content:center;padding:24px 12px 40px}
+.phone{width:390px;height:844px;background:var(--bg);border-radius:36px;border:10px solid #17211C;overflow:hidden;display:flex;flex-direction:column;position:relative;box-shadow:0 20px 50px rgba(15,61,46,.25)}
+@media(max-width:430px){.stage{padding:0}.phone{width:100vw;height:calc(100vh - 52px);border:0;border-radius:0}}
+.appbar{background:var(--g9);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.appbar .title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:16px}
+.jobsel{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:8px;padding:5px 8px;font-size:12px;font-weight:600}
+.iconbtn{position:relative;width:36px;height:36px;border-radius:10px;border:0;background:rgba(255,255,255,.12);color:#fff;display:flex;align-items:center;justify-content:center}
+.dot{position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:4px;background:var(--gold)}
+.scroll{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+.tabs{display:grid;grid-template-columns:repeat(5,1fr);background:#fff;border-top:1px solid var(--line)}
+.tabs button{border:0;background:#fff;padding:8px 0 10px;font-size:11px;font-weight:600;color:var(--mut);display:flex;flex-direction:column;align-items:center;gap:3px}
+.tabs button.on{color:var(--g9)}
+.tabs svg{width:22px;height:22px}
+.tabs button.on svg{stroke:var(--g7)}
+h1.s{font-size:22px;margin:0}
+h2.s{font-size:16px;margin:4px 0 0}
+.sub{color:var(--mut);font-size:13px;line-height:1.45}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.list{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid #E6EEE9;width:100%;background:#fff;border-left:0;border-right:0;border-top:0;text-align:left;color:var(--ink)}
+.li:last-child{border-bottom:0}
+.btn{border:0;border-radius:12px;height:46px;padding:0 16px;font-weight:700;background:var(--g9);color:#fff;width:100%}
+.btn.sm{height:36px;width:auto;border-radius:10px;font-size:13px}
+.btn.gold{background:var(--gold);color:var(--g9)}
+.btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.btn.outline{background:#fff;color:var(--g9);border:1.5px solid var(--g9)}
+.btn.danger{background:var(--redbg);color:#8E2A20}
+.btn.dis{background:#D5E2DA;color:var(--mut);cursor:not-allowed}
+.btn.done{background:#E3F1E9;color:#155C3F;border:1px solid #8DBFA6}
+.link{border:0;background:transparent;color:var(--g7);font-weight:600;padding:0;text-align:left}
+.alert{border-radius:14px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;line-height:1.45}
+.alert.red{background:var(--redbg);border:1px solid #E7B9B3;color:#6E1F17}
+.alert.gold{background:var(--goldbg);border:1px solid #E5C866;color:#5C4400}
+.alert.green{background:#E3F1E9;border:1px solid #8DBFA6;color:#155C3F}
+.alert.grey{background:#F0F2F1;border:1px solid #D9DFDC;color:#4F5E56}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px}
+.stat .k{font-size:12px;color:var(--mut)}.stat .v{font-size:22px;font-weight:800;color:var(--g9);margin-top:2px}.stat .v.red{color:var(--red)}
+.bars{display:flex;align-items:flex-end;gap:10px;height:120px;position:relative;padding-top:6px}
+.bar{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:var(--mut)}
+.bar div{width:100%;border-radius:6px 6px 2px 2px;background:var(--g7)}
+.bar div.ot{background:var(--red)}
+.line44{position:absolute;left:0;right:0;border-top:2px dashed #0F3D2E;z-index:1}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:#E4EBE7;border-radius:10px;padding:3px}
+.seg button{border:0;border-radius:8px;padding:8px;font-weight:700;background:transparent;color:var(--mut)}
+.seg button.on{background:#fff;color:var(--g9);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.field{display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--mut)}
+.field{min-width:0}.field input,.field select,.field textarea{width:100%;min-width:0;height:44px;border:1px solid var(--line);border-radius:10px;padding:0 12px;color:var(--ink);background:#fff}
+.field textarea{height:70px;padding:10px 12px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 12px;font-size:12.5px;font-weight:600;color:var(--ink)}
+.chip.on{background:var(--g9);color:#fff;border-color:var(--g9)}
+.math{background:#F7F9F8;border:1px dashed #B7C9BE;border-radius:10px;padding:10px 12px;font-size:12.5px;line-height:1.6}
+.steps{display:flex;flex-direction:column;gap:0}
+.step{display:flex;gap:10px;align-items:flex-start;padding:8px 0}
+.step .n{width:26px;height:26px;border-radius:13px;flex:none;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;border:2px solid var(--line);color:var(--mut);background:#fff}
+.step.done .n{background:var(--g7);border-color:var(--g7);color:#fff}
+.step.cur .n{border-color:var(--gold);color:var(--g9);background:var(--goldbg)}
+.bubble{max-width:82%;padding:10px 12px;border-radius:14px;line-height:1.45;font-size:13.5px}
+.bubble.me{align-self:flex-end;background:var(--g9);color:#fff;border-bottom-right-radius:4px}
+.bubble.them{align-self:flex-start;background:#fff;border:1px solid var(--line);border-bottom-left-radius:4px}
+.toggle{width:44px;height:26px;border-radius:13px;background:#C9D3CE;position:relative;flex:none;border:0}
+.toggle::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:10px;background:#fff;transition:left .15s}
+.toggle.on{background:var(--g7)}.toggle.on::after{left:21px}
+.sheet{position:absolute;inset:0;background:rgba(23,33,28,.45);display:flex;align-items:flex-end;z-index:5}
+.sheet>div{background:#fff;width:100%;border-radius:20px 20px 0 0;padding:18px;display:flex;flex-direction:column;gap:10px;max-height:85%;overflow:auto}
+.toast{position:absolute;left:16px;right:16px;bottom:78px;background:var(--ink);color:#fff;border-radius:12px;padding:12px 14px;font-size:13px;z-index:6}
+.dtoast{position:fixed;left:50%;transform:translateX(-50%);bottom:24px;background:var(--ink);color:#fff;border-radius:12px;padding:12px 16px;z-index:30}
+/* desktop (clinic/admin) */
+.desk{max-width:1280px;margin:0 auto;min-height:calc(100vh - 52px);background:var(--bg)}
+.dhead{background:var(--g9);color:#fff;padding:14px 24px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.dhead.admin{background:#17211C}
+.dnav{display:flex;gap:8px;flex-wrap:wrap;padding:16px 24px 0}
+.dnav button{height:40px;padding:0 16px;border-radius:10px;border:1px solid var(--line);background:#fff;font-weight:600;color:var(--ink)}
+.dnav button.on{background:var(--g9);color:#fff;border-color:var(--g9)}
+.dbody{padding:18px 24px 40px;display:flex;flex-direction:column;gap:16px}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:16px;align-items:start}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+table.t{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+table.t th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;color:#5E6B64;background:#F7F9F8;padding:10px 12px;border-bottom:1px solid var(--line)}
+table.t td{padding:11px 12px;border-bottom:1px solid #E6EEE9;vertical-align:top}
+table.t tr.sel td{background:#EEF5F1}
+table.t tr.click{cursor:pointer}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.hbar{display:grid;grid-template-columns:150px 1fr 60px;gap:10px;align-items:center;margin:8px 0}
+.hbar .track{height:14px;background:var(--g1);border-radius:7px;overflow:hidden}.hbar .fill{height:100%;background:var(--g7);border-radius:7px}
+.login{min-height:calc(100vh - 52px);display:flex;align-items:center;justify-content:center;padding:24px}
+.login .box{width:100%;max-width:420px;background:#fff;border-radius:18px;padding:28px;display:flex;flex-direction:column;gap:14px;box-shadow:0 10px 40px rgba(0,0,0,.15)}
+.codein{height:54px!important;font-size:24px!important;letter-spacing:8px;text-align:center;font-family:ui-monospace,Menlo,monospace}
+.future{border:1.5px dashed #AEB9B3;background:#FAFBFA}
+.empty{color:var(--mut);text-align:center;padding:30px}
+@media print{.demobar{display:none}}
+.rolecard .btn{display:flex;align-items:center;justify-content:center;margin-top:auto}
+</style></head>
+<body><div id="app"></div>
+<script>
+/* PayCheck interactive mock-up – Team T03 – COMP3059 Sprint 4
+   Standalone: no internet, no build step. All data is invented test data. */
+const $root = document.getElementById('app');
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const money = (n) => '$' + Number(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+const RATE = 17.95, OTP = 8.975;
+
+const INIT = {
+  role: 'home', toast: '',
+  // worker
+  w: { screen: 'signin', tab: 'home', job: 'hg', consent: false, onShift: false, shiftStart: '', weekHours: 18,
+    seg: 'log', scan: 'idle', scanPick: null, scanSaved: false, openShift: null, edits: {}, edit: null,
+    su: { step: 1, name: 'Maria Santos', email: 'maria.s@example.com', employer: 'Harbour Grill', address: '120 Queens Quay W, Toronto', start: '2025-03-03', rate: '17.95', sched: '2w', face: false, home: false, remind: false },
+    stub: 'none', stubHours: null, stubWarn: false, newStub: false, openPeriod: null, mathOpen: null,
+    guide: null, screen1: {}, ev: 'all', notes: [], noteDraft: '',
+    claim: 0, shared: false, shareClinic: 'Parkdale Community Legal Services', shareDays: 30, sheet: null, downloaded: false,
+    msgs: [{ me: false, t: 'Hi Maria, I’m Aisha from the clinic. I’ve started reviewing your Harbour Grill case.' }, { me: false, t: 'Could you upload your Sep 17 pay stub (Aug 31 – Sep 13)? I need it to confirm the Labour Day amount.', req: true }],
+    reqDone: false, msgDraft: '', unread: true,
+    tips: [{ d: 'Oct 10', a: 64.0 }, { d: 'Oct 9', a: 41.5 }], tipDraft: '',
+    notif: { shift: true, pay: true, deadline: true }, othersOut: false, exported: false, delAsk: false },
+  // clinic
+  c: { auth: 'login', code: '', tab: 'intake', assigned: {}, sel: 'maria', ev: null, notes: { maria: ['Overtime is clear from the stubs. Labour Day: confirm she did not work it (her note from Sep 8 says so).'] }, noteDraft: '',
+    status: {}, reqSent: {}, msgs: [{ me: false, t: 'Thanks, I’ll upload it tonight.' }], msgDraft: '' },
+  // admin
+  a: { auth: 'login', code: '', tab: 'rules', editing: null, draft: '', eff: '2027-10-01', invite: '', invited: [], off: {},
+    audit: [['Minimum wage version added: $17.95 effective Oct 1, 2026 (previous $17.60 kept for earlier pay periods)', 'Sep 15, 2026'], ['Caseworker invited: omar.h@parkdalelegal.example (Parkdale Community Legal Services)', 'Sep 2, 2026'], ['Public holiday list for 2027 added (9 holidays)', 'Aug 20, 2026']],
+    rules: [
+      { id: 'mw', name: 'General minimum wage', sec: 's. 23.1', versions: [['$17.20 / h', 'Oct 1, 2024'], ['$17.60 / h', 'Oct 1, 2025'], ['$17.95 / h', 'Oct 1, 2026']] },
+      { id: 'ot', name: 'Overtime threshold', sec: 's. 22', versions: [['44 h per work week', 'Sep 4, 2001']] },
+      { id: 'om', name: 'Overtime multiplier', sec: 's. 22', versions: [['1.5 × regular rate', 'Sep 4, 2001']] },
+      { id: 'v4', name: 'Vacation pay (under 5 years)', sec: 's. 35.2', versions: [['4%', 'Sep 4, 2001']] },
+      { id: 'v6', name: 'Vacation pay (5+ years)', sec: 's. 35.2', versions: [['6%', 'Jan 1, 2018']] },
+      { id: 'ph', name: 'Public holiday pay divisor', sec: 's. 24', versions: [['÷ 20 (4 work weeks)', 'Jan 1, 2018']] },
+      { id: 'cl', name: 'Claim window', sec: 's. 111', versions: [['2 years', 'Feb 20, 2015']] }] }
+};
+let S = JSON.parse(JSON.stringify(INIT));
+try { const h = decodeURIComponent(location.hash.slice(1)); if (h.startsWith('{')) deepAssign(S, JSON.parse(h)); } catch (e) {}
+function deepAssign(t, s) { for (const k in s) { if (s[k] && typeof s[k] === 'object' && !Array.isArray(s[k]) && t[k] && typeof t[k] === 'object') deepAssign(t[k], s[k]); else t[k] = s[k]; } return t; }
+function up(path, val) { const ks = path.split('.'); let o = S; ks.slice(0, -1).forEach((k) => (o = o[k])); o[ks[ks.length - 1]] = val; }
+function get(path) { return path.split('.').reduce((o, k) => (o == null ? o : o[k]), S); }
+function toast(t) { S.toast = t; render(); clearTimeout(toast.h); toast.h = setTimeout(() => { S.toast = ''; render(); }, 2400); }
+
+/* ---------- data ---------- */
+function periods() {
+  const P = [
+    { id: 'p1', label: 'Aug 31 – Sep 13', pay: 'Sep 17', hours: 100, weeks: [['Aug 31', 52], ['Sep 7', 48]], hol: 157.96 },
+    { id: 'p2', label: 'Sep 14 – Sep 27', pay: 'Oct 1', hours: 100, weeks: [['Sep 14', 50], ['Sep 21', 50]], hol: 0 }];
+  if (S.w.newStub) P.push({ id: 'p3', label: 'Sep 28 – Oct 11', pay: 'Oct 15', hours: 98, weeks: [['Sep 28', 50], ['Oct 5', 48]], hol: 0, isNew: true });
+  P.forEach((p) => { p.ot = p.weeks.reduce((a, [, h]) => a + Math.max(0, h - 44), 0); p.otAmt = +(p.ot * OTP).toFixed(2); p.gross = +(p.hours * RATE).toFixed(2); p.short = +(p.otAmt + p.hol).toFixed(2); });
+  return P;
+}
+const VAC = 179.5;
+function owed() { return +(periods().reduce((a, p) => a + p.short, 0) + VAC).toFixed(2); }
+
+/* ---------- icons ---------- */
+const I = {
+  home: '<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  pay: '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/>',
+  book: '<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5"/>',
+  more: '<circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>',
+  msg: '<path d="M4 5h16v11H8l-4 4z"/>'
+};
+const svg = (k, c = 'currentColor') => `<svg viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${I[k]}</svg>`;
+
+/* ---------- shared bits ---------- */
+const btn = (label, act, cls = '', arg = '') => `<button class="btn ${cls}" data-a="${act}" data-arg="${esc(arg)}">${label}</button>`;
+const back = (label, act, arg) => `<button class="link" data-a="${act}" data-arg="${arg || ''}">‹ ${label}</button>`;
+const tag = (t, c) => `<span class="tag ${c}">${t}</span>`;
+const field = (label, bind, type = 'text', extra = '') => `<label class="field">${label}<input type="${type}" data-b="${bind}" value="${esc(get(bind))}" ${extra}></label>`;
+const disclaimer = '<div class="sub" style="font-size:11.5px">Worker-prepared estimate based on the information you entered. Not legal advice or a Ministry decision.</div>';
+
+/* =================== WORKER =================== */
+function worker() {
+  const w = S.w;
+  if (w.screen === 'signin') return phone(signin(), false);
+  if (w.screen === 'signup') return phone(signup(), false);
+  const map = { home: wHome, shifts: wShifts, pay: wPay, guide: wGuide, more: wMore, edit: wEdit, stub: wStub, claim: wClaim, package: wPackage, evidence: wEvidence, messages: wMessages, jobs: wJobs, profile: wProfile, screening: wScreening };
+  return phone((map[w.screen] || wHome)(), true);
+}
+function phone(inner, chrome) {
+  const w = S.w;
+  const tabs = [['home', 'Home', 'home'], ['shifts', 'Shifts', 'clock'], ['pay', 'Pay', 'pay'], ['guide', 'Rights', 'book'], ['more', 'More', 'more']];
+  return `<div class="stage"><div class="phone">
+  ${chrome ? `<div class="appbar"><div class="title"><span class="chk">✓</span>PayCheck</div>
+    <select class="jobsel" data-b="w.job" data-render="1"><option value="hg" ${w.job === 'hg' ? 'selected' : ''}>Harbour Grill · Server</option><option value="dg" ${w.job === 'dg' ? 'selected' : ''}>Daily Grind · Barista</option></select>
+    <button class="iconbtn" data-a="go" data-arg="messages" aria-label="Messages">${svg('msg', '#fff')}${w.unread ? '<span class="dot"></span>' : ''}</button></div>` : ''}
+  <div class="scroll" id="scroll">${inner}</div>
+  ${chrome ? `<nav class="tabs">${tabs.map(([id, l, ic]) => `<button class="${w.tab === id ? 'on' : ''}" data-a="tab" data-arg="${id}">${svg(ic)}${l}</button>`).join('')}</nav>` : ''}
+  ${w.sheet ? sheet() : ''}${S.toast ? `<div class="toast">${esc(S.toast)}</div>` : ''}
+  </div></div>`;
+}
+function signin() {
+  const w = S.w;
+  return `<div style="flex:1;display:flex;flex-direction:column;gap:14px;padding-top:40px">
+  <div style="display:flex;align-items:center;gap:10px;font-size:26px;font-weight:800;color:var(--g9)"><span class="chk" style="width:40px;height:40px;font-size:22px">✓</span>PayCheck</div>
+  <div style="font-size:22px;font-weight:700;line-height:1.3">Know if you were paid right. Prove it if you weren’t.</div>
+  <div class="sub">For hourly workers in Ontario. Your employer never sees your PayCheck records.</div>
+  ${field('Email', 'w.su.email', 'email')}
+  <label class="field">Password<input type="password" value="demo-password"></label>
+  <label style="display:flex;gap:10px;font-size:13px;line-height:1.45"><input type="checkbox" data-c="w.consent" ${w.consent ? 'checked' : ''} style="width:20px;height:20px;margin:0;flex:none"> I agree to the privacy notice. My records are private and I can delete them anytime.</label>
+  ${btn(w.consent ? 'Sign in' : 'Accept the privacy notice to sign in', 'signin', w.consent ? '' : 'dis')}
+  <button class="btn ghost" data-a="toast" data-arg="Face ID would sign you in here (passkey).">Sign in with Face ID</button>
+  ${btn('New here? Create an account', 'signupStart', 'outline')}
+  <div class="sub" style="text-align:center;margin-top:auto">Demo: any password works. Data is invented test data.</div></div>`;
+}
+function signup() {
+  const w = S.w, su = w.su, st = su.step;
+  const bars = [1, 2, 3].map((n) => `<div style="height:5px;border-radius:3px;background:${n <= st ? 'var(--g7)' : 'var(--line)'}"></div>`).join('');
+  const top = `<div class="row">${back('Back', 'suBack')}<span class="sub">Step ${st} of 3</span></div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">${bars}</div>`;
+  if (st === 1) {
+    const ok = w.consent && su.name.trim() && /.+@.+\..+/.test(su.email);
+    return top + `<h1 class="s">Create your account</h1><div class="sub">Free for workers. Your employer is never told you use PayCheck.</div>
+    ${field('Full name', 'w.su.name')}${field('Email', 'w.su.email', 'email')}<label class="field">Password (12+ characters)<input type="password" value="demo-password-1"></label>
+    <label style="display:flex;gap:10px;font-size:13px;line-height:1.45"><input type="checkbox" data-c="w.consent" ${w.consent ? 'checked' : ''} style="width:20px;height:20px;margin:0;flex:none"> I agree to the privacy notice (FR-01).</label>
+    ${btn(ok ? 'Continue' : 'Fill in your details and accept', 'suNext', ok ? '' : 'dis')}`;
+  }
+  if (st === 2) {
+    const r = parseFloat(su.rate), d = new Date(su.start + 'T00:00:00'), yrs = isNaN(d) ? 0 : (new Date('2026-10-15') - d) / (365.25 * 864e5);
+    const warn = isNaN(r) ? ['grey', 'Enter your hourly rate.'] : r < 17.95 ? ['red', `$${r.toFixed(2)} is below Ontario’s general minimum wage ($17.95 since Oct 1, 2026). PayCheck will flag this on every paycheck.`] : ['green', `$${r.toFixed(2)}/h is at or above the minimum wage.`];
+    return top + `<h1 class="s">Add your job</h1><div class="sub">Used to check your pay and to fill in the employer part of your claim (FR-02).</div>
+    ${field('Employer name', 'w.su.employer')}${field('Employer address', 'w.su.address')}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">${field('Start date', 'w.su.start', 'date', 'data-render="1"')}${field('Hourly rate ($)', 'w.su.rate', 'text', 'inputmode="decimal" data-render="1"')}</div>
+    <div class="sub">How often are you paid?</div><div class="chips">${[['1w', 'Weekly'], ['2w', 'Every 2 weeks'], ['2m', 'Twice a month']].map(([k, l]) => `<button class="chip ${su.sched === k ? 'on' : ''}" data-a="set" data-arg="w.su.sched=${k}">${l}</button>`).join('')}</div>
+    <div class="alert ${warn[0]}">${warn[1]}</div>
+    <div class="alert green">${yrs >= 5 ? `About ${Math.floor(yrs)} years with this employer: your vacation pay should be 6%.` : 'Under 5 years with this employer: vacation pay should be at least 4% (6% after 5 years).'}</div>
+    ${btn('Save job', 'suNext')}`;
+  }
+  const t = (k, a, b) => `<button class="btn ${su[k] ? 'done' : 'ghost'}" style="text-align:left" data-a="set" data-arg="w.su.${k}=1">${su[k] ? '✓ ' + b : a}</button>`;
+  return top + `<h1 class="s">Make it two taps</h1><div class="sub">Logging shifts only works if it’s fast.</div>
+  ${t('face', 'Turn on Face ID sign-in', 'Face ID is on')}${t('home', 'Add PayCheck to my home screen', 'Added to home screen (PWA)')}${t('remind', 'Remind me when a shift starts and ends', 'Shift reminders are on')}
+  <div class="card sub"><b style="color:var(--ink)">What happens next</b><br>1. Scan or enter your posted schedule.<br>2. Tap Start and End at each shift.<br>3. Add each pay stub – PayCheck checks it right away.</div>
+  ${btn('Go to my dashboard', 'suDone', 'gold')}`;
+}
+function jobDG() { return S.w.job === 'dg'; }
+function wHome() {
+  const w = S.w;
+  if (jobDG()) return `<h1 class="s">Daily Grind · Barista</h1><div class="sub">Second job – checked separately (FR-17). Hours are never combined with Harbour Grill for overtime.</div>
+    <div class="stats"><div class="stat"><div class="k">You may be owed</div><div class="v">$0.00</div></div><div class="stat"><div class="k">This week</div><div class="v">9 h</div></div></div>
+    <div class="alert green">Last 3 paychecks checked: all OK.</div>${btn('Start shift', 'toast', '', 'Shift started at 7:02 (server time) – Daily Grind')}`;
+  const P = periods(), o = owed();
+  const weeks = [['Aug 31', 52], ['Sep 7', 48], ['Sep 14', 50], ['Sep 21', 50], ['Sep 28', 50], ['Oct 5', 48]];
+  const maxH = 56;
+  return `${w.newStub ? `<button class="alert red" style="text-align:left;border:1px solid #E7B9B3;width:100%" data-a="openPeriod" data-arg="p3"><b>!</b><div><b>Your Oct 15 paycheck looks short by ${money(P[2].short)}.</b><br>10 h of overtime were paid at your regular rate. Tap to see the math.</div></button>` : `<div class="alert gold"><b>!</b><div><b>Payday today.</b> Add your Oct 15 pay stub so PayCheck can check it.</div></div>`}
+  <button class="btn ${w.onShift ? 'gold' : ''}" style="height:58px;font-size:17px" data-a="shiftToggle">${w.onShift ? 'End shift · on since ' + w.shiftStart : 'Start shift'}</button>
+  <div class="stats">
+    <button class="stat" style="text-align:left" data-a="tab" data-arg="pay"><div class="k">You may be owed</div><div class="v red">${money(o)}</div><div class="sub">4 ESA rules checked</div></button>
+    <div class="stat"><div class="k">This week (Oct 12–18)</div><div class="v">${w.weekHours} h</div><div class="sub">${money(w.weekHours * RATE)} so far</div></div>
+    <div class="stat"><div class="k">Last paycheck</div><div class="v">${w.newStub ? '$1,759.10' : '$1,795.00'}</div><div class="sub">${w.newStub ? 'Oct 15' : 'Oct 1'}</div></div>
+    <div class="stat"><div class="k">Next payday</div><div class="v">${w.newStub ? 'Oct 29' : 'Today'}</div><div class="sub">every 2 weeks</div></div></div>
+  <div class="card"><div class="row"><b>Hours per week</b><span class="sub">— 44 h overtime line</span></div>
+  <div class="bars"><div class="line44" style="bottom:${(44 / maxH) * 100 * 0.84 + 18}px"></div>${weeks.map(([d, h]) => `<div class="bar"><span>${h}</span><div class="${h > 44 ? 'ot' : ''}" style="height:${(h / maxH) * 84}px"></div><span>${d}</span></div>`).join('')}</div>
+  <div class="sub" style="margin-top:6px">Red = over 44 h. Every red week should include overtime pay.</div></div>`;
+}
+function wShifts() {
+  const w = S.w;
+  return `<h1 class="s">Shifts</h1><div class="seg"><button class="${w.seg === 'log' ? 'on' : ''}" data-a="set" data-arg="w.seg=log">What I worked</button><button class="${w.seg === 'sched' ? 'on' : ''}" data-a="set" data-arg="w.seg=sched">Posted schedule</button></div>
+  ${w.seg === 'log' ? shiftLog() : schedule()}`;
+}
+const toMin = (t) => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
+const hrs = (a, b) => Math.round((toMin(b) - toMin(a)) / 6) / 10;
+function shiftRows() {
+  const base = [['m', 'Mon, Oct 5', '11:00', '21:00', 'live', 'Tapped live at 10:58 and 21:02 (server time).'], ['t', 'Tue, Oct 6', '11:00', '21:00', 'live', 'Tapped live at 11:01 and 21:00.'],
+    ['w', 'Wed, Oct 7', '12:00', '22:00', 'edited', 'Logged live 12:00 – 20:10. End changed to 22:00. Reason: forgot to tap out. Manager text attached.'],
+    ['h', 'Thu, Oct 8', '11:00', '21:00', 'later', 'Added the same night. Reason: phone battery died.'], ['f', 'Fri, Oct 9', '13:00', '21:00', 'live', 'Tapped live at 12:59 and 21:01.']];
+  return base.map(([id, day, st, en, k, hist]) => { const e = S.w.edits[id]; return e ? { id, day, st: e.st, en: e.en, k: 'edited', hist: hist + ` Changed today from ${st}–${en} to ${e.st}–${e.en}. Reason: ${e.reason}.${e.proof ? ' Proof attached.' : ''} Original kept.` } : { id, day, st, en, k, hist }; });
+}
+function shiftLog() {
+  const w = S.w, rows = shiftRows(), tot = rows.reduce((a, r) => a + hrs(r.st, r.en), 0);
+  const badge = { live: tag('Logged live', 't-ok'), later: tag('Added later', 't-warn'), edited: tag('Edited', 't-bad') };
+  return `<div class="card row"><div><b>Week of Oct 5 – 11</b><div class="sub">${Math.round(tot * 10) / 10} h · ${Math.max(0, Math.round((tot - 44) * 10) / 10)} h over 44</div></div>${tag('Overtime week', 't-bad')}</div>
+  <div class="list">${rows.map((r) => `<button class="li" data-a="openShift" data-arg="${r.id}" style="flex-direction:column;align-items:stretch"><div class="row"><div><b>${r.day}</b><div class="sub">${r.st} – ${r.en} · ${hrs(r.st, r.en)} h</div></div>${badge[r.k]}</div>${w.openShift === r.id ? `<div class="math" style="margin-top:8px">${esc(r.hist)}</div>` : ''}</button>`).join('')}</div>
+  ${w.openShift ? btn('Fix the times for ' + rows.find((r) => r.id === w.openShift).day.split(',')[0], 'editStart') : '<div class="sub">Tap a shift to see its full history (FR-04).</div>'}
+  <button class="btn ghost" data-a="toast" data-arg="Missed shift form: date, start, end, break and a reason. It will be marked “Added later”.">+ Add a missed shift</button>`;
+}
+function schedule() {
+  const w = S.w;
+  if (w.scan === 'idle') return `<div class="card"><b>Week of Oct 19</b><div class="sub">Take a photo of the schedule posted at work, or type in your shifts. Only your own row is kept – coworkers’ names and hours are never stored.</div></div>
+    ${btn('Take a photo of the schedule', 'set', '', 'w.scan=review')}<button class="btn ghost" data-a="toast" data-arg="Manual entry: add each posted shift (date, start, end).">Type it in instead</button>
+    <div class="alert grey" style="font-size:12.5px">${tag('Future phase', 't-fut')} AI reading of the photo. In the first version you confirm or type the shifts; the photo is kept as evidence.</div>
+    ${posted()}`;
+  if (w.scan === 'review') return `<div class="card" style="background:#17211C;color:#fff;height:150px;display:flex;align-items:center;justify-content:center;border:0">📷 Schedule photo – Week of Oct 19</div>
+    <div class="sub">Found your row: <b>Maria S.</b> Check each day.</div>
+    <div class="list">${[['Mon Oct 19', '11:00 – 21:00'], ['Tue Oct 20', '11:00 – 21:00'], ['Thu Oct 22', '11:00 – 21:00'], ['Sat Oct 24', '12:00 – 22:00']].map(([d, t]) => `<div class="li"><b>${d}</b><span>${t}</span></div>`).join('')}
+      <div class="li" style="background:var(--goldbg);flex-direction:column;align-items:stretch;gap:8px"><b>Wed Oct 21 – hard to read. Which is right?</b><div class="chips">${['12:00 – 20:00', '12:00 – 22:00'].map((t) => `<button class="chip ${w.scanPick === t ? 'on' : ''}" data-a="set" data-arg="w.scanPick=${t}">${t}</button>`).join('')}</div></div></div>
+    ${btn(w.scanPick ? 'Save posted schedule' : 'Pick the Wednesday time first', 'scanSave', w.scanPick ? '' : 'dis')}`;
+  return `<div class="alert green">Posted schedule for Oct 19 – 25 saved (5 shifts, 50 h). Photo added to your evidence vault.</div>${posted()}`;
+}
+function posted() {
+  return `<div class="card"><b>Posted vs. worked · Oct 5 – 11</b><div class="sub" style="margin-bottom:6px">Your employer planned 44 h; you worked 48 h.</div>
+  <table style="width:100%;font-size:12.5px;border-collapse:collapse">${[['Mon', '10', '10'], ['Tue', '10', '10'], ['Wed', '8', '10'], ['Thu', '8', '10'], ['Fri', '8', '8']].map(([d, a, b]) => `<tr><td style="padding:4px 0">${d}</td><td>posted ${a} h</td><td>worked ${b} h</td><td style="text-align:right;color:${b > a ? 'var(--red)' : 'var(--mut)'}">${b > a ? '+' + (b - a) + ' h' : '–'}</td></tr>`).join('')}</table></div>`;
+}
+function wEdit() {
+  const w = S.w, e = w.edit, r = shiftRows().find((x) => x.id === e.id), ok = e.reason && toMin(e.en) > toMin(e.st);
+  return `${back('Shifts', 'go', 'shifts')}<h1 class="s">Fix shift times</h1><div class="sub">${r.day} · now ${r.st} – ${r.en}</div>
+  <div class="alert green" style="font-size:13px">The original time stays in the history. A caseworker or Ministry officer can see every change and why.</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">${field('Start', 'w.edit.st', 'time')}${field('End', 'w.edit.en', 'time')}</div>
+  <b>Why are you changing it? (required)</b><div class="chips">${['Forgot to tap out', 'Phone died', 'Manager changed my shift', 'Tapped by mistake'].map((x) => `<button class="chip ${e.reason === x ? 'on' : ''}" data-a="set" data-arg="w.edit.reason=${x}">${x}</button>`).join('')}</div>
+  <button class="btn ${e.proof ? 'done' : 'ghost'}" data-a="set" data-arg="w.edit.proof=${e.proof ? '' : '1'}">${e.proof ? '✓ Photo of manager text attached' : '+ Attach proof (optional)'}</button>
+  ${btn(ok ? 'Save change' : 'Pick a reason to save', 'editSave', ok ? '' : 'dis')}`;
+}
+function wPay() {
+  const w = S.w;
+  if (jobDG()) return `<h1 class="s">Paychecks · Daily Grind</h1><div class="list">${['Oct 9', 'Sep 25', 'Sep 11'].map((d) => `<div class="li"><div><b>${d}</b><div class="sub">4 rules checked</div></div>${tag('OK', 't-ok')}</div>`).join('')}</div>`;
+  const P = periods(), o = owed();
+  return `<h1 class="s">Paychecks</h1><div class="sub">Harbour Grill · $17.95/h · every 2 weeks. Each stub is checked against 4 ESA rules.</div>
+  <div class="card row"><div><div class="sub">You may be owed</div><div style="font-size:26px;font-weight:800;color:var(--red)">${money(o)}</div></div><button class="btn sm" data-a="go" data-arg="claim">Build claim</button></div>
+  ${P.map((p) => periodCard(p)).join('')}
+  <div class="card"><div class="row"><div><b>Vacation pay</b><div class="sub">Aug 31 – Oct 4 · none shown on stubs</div></div><b style="color:var(--red)">${money(VAC)}</b></div>
+  <button class="link" data-a="math" data-arg="vac" style="margin-top:6px">Show the math</button>${w.mathOpen === 'vac' ? `<div class="math" style="margin-top:6px">4% × wages earned $4,487.50 (250 h × $17.95) = <b>$179.50</b><br>Paid: $0.00 → short <b>$179.50</b><br><span class="sub">ESA s. 35.2 · under 5 years with this employer (started Mar 3, 2025) → 4%</span></div>` : ''}</div>
+  ${w.newStub ? '<div class="alert green">Oct 15 stub checked. Next stub due Oct 29.</div>' : btn('+ Add Oct 15 pay stub', 'stubStart', 'gold')}
+  ${disclaimer}`;
+}
+function periodCard(p) {
+  const w = S.w, open = w.openPeriod === p.id;
+  const rules = [['Minimum wage', 0, `Rate $17.95 ≥ minimum ($17.60 until Sep 30, $17.95 from Oct 1) → OK<br><span class="sub">ESA s. 23.1</span>`],
+    ['Overtime', p.otAmt, p.weeks.map(([d, h]) => `Week of ${d}: ${h} h → ${Math.max(0, h - 44)} h over 44`).join('<br>') + `<br>${p.ot} h × ($26.93 owed − $17.95 paid) = ${p.ot} × $8.975 = <b>${money(p.otAmt)}</b><br><span class="sub">ESA s. 22 · overtime after 44 h at 1.5×</span>`],
+    ['Public holiday', p.hol, p.hol ? `Labour Day (Mon Sep 7), not worked.<br>Regular wages in the 4 weeks before: 4 × 44 h × $17.95 = $3,159.20<br>$3,159.20 ÷ 20 = <b>$157.96</b> · stub shows $0.00<br><span class="sub">ESA s. 24</span>` : 'No public holiday in this pay period → OK'],
+    ['Vacation pay', 0, 'Shown separately below (calculated for the whole claim period).']];
+  return `<div class="card" ${p.isNew ? 'style="border:2px solid var(--red)"' : ''}><button class="li" style="padding:0;border:0" data-a="openPeriod" data-arg="${p.id}"><div><b>${p.label}</b><div class="sub">Paid ${p.pay} · ${p.hours} h · gross ${money(p.gross)}</div></div><div style="text-align:right">${tag('Short ' + money(p.short), 't-bad')}<div class="sub">${open ? 'Hide' : 'Details'}</div></div></button>
+  ${open ? `<div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">${rules.map(([n, a, m], i) => `<div><div class="row"><span>${n}</span>${a ? `<b style="color:var(--red)">${money(a)}</b>` : tag('OK', 't-ok')}</div><button class="link" style="font-size:12.5px" data-a="math" data-arg="${p.id}-${i}">Show the math</button>${w.mathOpen === p.id + '-' + i ? `<div class="math">${m}</div>` : ''}</div>`).join('')}</div>` : ''}</div>`;
+}
+function wStub() {
+  const w = S.w;
+  if (w.stub === 'photo' || w.stub === 'reading') return `${back('Paychecks', 'go', 'pay')}<h1 class="s">Add a pay stub</h1>
+    <div style="height:240px;border-radius:14px;background:#17211C;display:flex;align-items:center;justify-content:center;position:relative"><div style="width:170px;height:200px;background:#F7F4EC;border-radius:4px;transform:rotate(-2deg);padding:14px;display:flex;flex-direction:column;gap:7px">${'<div style="height:6px;background:#C3BDAE;border-radius:2px"></div>'.repeat(7)}</div><div style="position:absolute;inset:16px;border:2px dashed var(--gold);border-radius:10px"></div></div>
+    <div class="sub" style="text-align:center">Line up the whole stub, or upload the PDF from your payroll site (JPG, PNG or PDF, max 10 MB).</div>
+    ${btn(w.stub === 'reading' ? 'Reading your stub…' : 'Take photo', 'stubRead')}<button class="btn ghost" data-a="stubRead">Upload PDF instead</button>`;
+  const f = [['Pay period', 'Sep 28 – Oct 11'], ['Pay date', 'Oct 15, 2026'], ['Hours paid', w.stubHours ? w.stubHours + '.0 h' : '?? h', !w.stubHours], ['Rate', '$17.95 / h'], ['Overtime paid', '$0.00'], ['Vacation pay', 'not shown'], ['Gross pay', '$1,759.10']];
+  return `${back('Paychecks', 'go', 'pay')}<h1 class="s">Check the stub details</h1><div class="alert green" style="font-size:13px">Confirm each line, then PayCheck runs the 4 ESA checks (FR-06 → FR-08).</div>
+  <div class="list">${f.map(([k, v, warn]) => `<div class="li" ${warn ? 'style="background:var(--goldbg)"' : ''}><span class="sub">${k}</span><b>${v}</b></div>`).join('')}</div>
+  ${!w.stubHours ? `<div class="alert gold" style="flex-direction:column;gap:8px"><b>The hours number is blurry. Which is right?</b><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="btn ghost sm" style="width:100%" data-a="stubH" data-arg="98">98.0 h</button><button class="btn ghost sm" style="width:100%" data-a="stubH" data-arg="93">93.0 h</button></div><div style="font-size:12px">Your shift log for these two weeks says 98 h.</div>${w.stubWarn ? '<div style="font-size:12px;color:#8E2A20;font-weight:700">93 h × $17.95 = $1,669.35, but gross pay is $1,759.10. Only 98 h matches the stub total.</div>' : ''}</div>` : ''}
+  ${btn(w.stubHours ? 'Check this paycheck' : 'Confirm the hours first', 'stubCheck', w.stubHours ? '' : 'dis')}`;
+}
+function wGuide() {
+  const w = S.w;
+  const A = {
+    ot: ['Overtime', 'In Ontario, most employees get overtime pay after 44 hours in a work week – not after 8 hours a day. Overtime is at least 1.5 times your regular rate. Example: at $17.95/h, each overtime hour is $26.93.', 'ESA s. 22'],
+    ph: ['Public holidays', 'There are 9 public holidays: New Year’s Day, Family Day, Good Friday, Victoria Day, Canada Day, Labour Day, Thanksgiving, Christmas Day and Boxing Day. If you get the day off, holiday pay = your regular wages and vacation pay in the 4 work weeks before, divided by 20.', 'ESA s. 24'],
+    vp: ['Vacation pay', 'At least 4% of the wages you earn, or 6% after 5 years with the same employer. It can be paid on each paycheck or before your vacation.', 'ESA s. 35.2'],
+    mw: ['Minimum wage', 'The general minimum wage is $17.95 an hour since Oct 1, 2026 ($17.60 before). Tips do not count toward minimum wage.', 'ESA s. 23.1'],
+    file: ['How to file a claim', '1. Build your claim package in PayCheck. 2. Optional: share it with a legal clinic for review. 3. File online with the Ministry of Labour and attach the PDF. You have 2 years from the date the money was due.', 'ESA s. 111']
+  };
+  if (w.guide) { const [t, b, s] = A[w.guide]; return `${back('Rights guide', 'set', 'w.guide=')}<h1 class="s">${t}</h1><div class="card" style="line-height:1.6;font-size:14.5px">${b}</div><div class="sub">Source: Employment Standards Act, 2000, ${s} · Your guide to the ESA (ontario.ca)</div>${disclaimer}`; }
+  return `<h1 class="s">Know your rights</h1><div class="sub">Plain-language guide to the 4 rules PayCheck checks (FR-18).</div>
+  <button class="alert gold" style="text-align:left;width:100%" data-a="go" data-arg="screening"><b>?</b><div><b>Is PayCheck right for me?</b><br>5 quick questions to check if your job is covered.</div></button>
+  <div class="list">${Object.entries(A).map(([k, [t]]) => `<button class="li" data-a="set" data-arg="w.guide=${k}"><b>${t}</b><span>›</span></button>`).join('')}</div>
+  <div class="card future"><div class="row"><b>Ask a question</b>${tag('Future phase', 't-fut')}</div><div class="sub">An AI assistant that answers only from the official ESA guide is planned for a later phase (FR-F2).</div></div>`;
+}
+function wScreening() {
+  const w = S.w, a = w.screen1;
+  const Q = [['union', 'Are you in a union?'], ['fed', 'Is your employer a bank, airline, trucking or telecom company (federally regulated)?'], ['mgr', 'Are you a manager or supervisor?'], ['special', 'Do you work in farming, construction or another industry with special ESA rules?'], ['student', 'Are you a student under 18 working 28 hours a week or less?']];
+  const yes = Q.filter(([k]) => a[k] === 'y'), done = Q.every(([k]) => a[k]);
+  return `${back('Rights guide', 'go', 'guide')}<h1 class="s">Is PayCheck right for me?</h1>
+  ${Q.map(([k, q]) => `<div class="card"><div style="margin-bottom:8px">${q}</div><div class="chips"><button class="chip ${a[k] === 'y' ? 'on' : ''}" data-a="set" data-arg="w.screen1.${k}=y">Yes</button><button class="chip ${a[k] === 'n' ? 'on' : ''}" data-a="set" data-arg="w.screen1.${k}=n">No</button></div></div>`).join('')}
+  ${done ? (yes.length ? `<div class="alert gold"><b>!</b><div><b>Some rules may be different for you.</b> PayCheck will still work, but results will show a warning. A legal clinic can tell you which rules apply.</div></div>` : '<div class="alert green">Good news – the 4 rules PayCheck checks apply to your job.</div>') : ''}`;
+}
+function wMore() {
+  const items = [['profile', 'Profile and settings', 'Your info, job details, security, privacy'], ['claim', 'My claim', 'Package, sharing and tracker'], ['evidence', 'Evidence vault', 'All your proof in one timeline'], ['messages', 'Messages', 'Your caseworker'], ['jobs', 'Jobs and tips', '2 jobs · tips tracked separately']];
+  return `<h1 class="s">More</h1><div class="list">${items.map(([k, t, s]) => `<button class="li" data-a="go" data-arg="${k}"><div><b>${t}</b><div class="sub">${s}</div></div><span>›</span></button>`).join('')}</div>
+  <div class="list"><div class="li"><div><b>Language</b><div class="sub">English</div></div>${tag('More languages: future phase', 't-fut')}</div></div>
+  <button class="btn ghost" data-a="signout">Sign out</button>`;
+}
+function wClaim() {
+  const w = S.w, o = owed();
+  const steps = ['Claim package ready', 'Reviewed by a clinic (optional)', 'Filed with the Ministry of Labour', 'Employment Standards Officer assigned', 'Decision'];
+  return `${back('More', 'go', 'more')}<h1 class="s">My claim · Harbour Grill</h1>
+  <div class="card row"><div><div class="sub">Amount to claim</div><div style="font-size:24px;font-weight:800;color:var(--red)">${money(o)}</div></div><div style="text-align:right" class="sub">Aug 31 – ${w.newStub ? 'Oct 11' : 'Sep 27'}, 2026</div></div>
+  <div class="card steps">${steps.map((s, i) => `<div class="step ${i < w.claim ? 'done' : i === w.claim ? 'cur' : ''}"><span class="n">${i < w.claim ? '✓' : i + 1}</span><div><b>${s}</b>${i === 1 && w.shared ? `<div class="sub">Shared with ${esc(w.shareClinic)} · ${w.shareDays} days</div>` : ''}</div></div>`).join('')}</div>
+  ${w.claim === 0 ? btn('Create claim package', 'claimCreate', 'gold') : btn('View claim package (PDF)', 'go', 'ghost', 'package')}
+  ${w.claim >= 1 && !w.shared ? btn('Share with a legal clinic for review', 'sheet', 'outline', 'share') : ''}
+  ${w.shared ? `<div class="card row"><div><b>Shared with</b><div class="sub">${esc(w.shareClinic)} · read-only · expires in ${w.shareDays} days</div></div><button class="btn sm danger" data-a="unshare">Stop sharing</button></div>` : ''}
+  ${w.claim >= 1 && w.claim < 4 ? btn(['', 'Mark as reviewed', 'I filed it with the Ministry', 'An officer was assigned', ''][w.claim + (w.claim === 1 && !w.shared ? 1 : 0)] || 'Next step', 'claimNext', 'ghost') : ''}
+  <div class="card row"><span>Deadline for the oldest amount</span><b>Sep 17, 2028</b></div><div class="sub">2 years after the Sep 17, 2026 payday (ESA s. 111). Reminders 90 and 30 days before.</div>`;
+}
+function wPackage() {
+  const w = S.w, P = periods(), ot = P.reduce((a, p) => a + p.ot, 0);
+  return `${back('My claim', 'go', 'claim')}<h1 class="s">Claim package</h1>
+  <div style="background:#fff;border:1px solid #C9D3CE;border-radius:6px;padding:14px;font-size:12px;line-height:1.5;display:flex;flex-direction:column;gap:10px;box-shadow:0 2px 10px rgba(0,0,0,.06)">
+  <div style="border-bottom:2px solid var(--g9);padding-bottom:6px"><b style="font-size:14px">Employment Standards claim – supporting package</b><div class="sub" style="font-size:11px">Prepared with PayCheck · sections follow the Ministry claim form</div></div>
+  <div><b>1. Worker</b><br>Maria Santos · maria.s@example.com</div><div><b>2. Employer</b><br>Harbour Grill · 120 Queens Quay W, Toronto<br>Server since Mar 3, 2025 · $17.95/h · bi-weekly</div>
+  <div><b>3. Amounts claimed</b>${[[`Overtime (${ot} h over 44/week)`, `${ot} h × $8.975`, ot * OTP], ['Public holiday pay – Labour Day', '$3,159.20 ÷ 20', 157.96], ['Vacation pay 4%', '4% × $4,487.50', VAC]].map(([a, b, c]) => `<div class="row" style="border-bottom:1px solid #E6EEE9;padding:4px 0"><div>${a}<div class="mono" style="font-size:10.5px;color:var(--mut)">${b}</div></div><b>${money(c)}</b></div>`).join('')}<div class="row" style="padding-top:4px"><b>Total</b><b>${money(owed())}</b></div></div>
+  <div><b>4. Evidence index</b><br>· ${w.newStub ? 3 : 2} pay stubs · 6 posted schedules · shift log (live / added later / edited, with reasons) · 1 manager text · 2 notes</div>
+  <div class="sub" style="font-size:10.5px">Worker-prepared estimate based on the information entered. Not legal advice or a Ministry decision.</div></div>
+  <button class="btn ${w.downloaded ? 'done' : 'gold'}" data-a="set" data-arg="w.downloaded=1">${w.downloaded ? '✓ Saved: Santos_HarbourGrill_2026-10-15.pdf' : 'Download PDF'}</button>
+  <div class="sub" style="text-align:center">Then file online with the Ministry of Labour and attach this PDF.</div>`;
+}
+function sheet() {
+  const w = S.w;
+  if (w.sheet === 'share') return `<div class="sheet"><div><b style="font-size:17px">Share with a legal clinic</b><div class="sub">The clinic can read this claim only – never change it. You can stop sharing at any time (FR-11).</div>
+    <label class="field">Clinic<select data-b="w.shareClinic"><option>Parkdale Community Legal Services</option><option>Workers’ Action Centre</option></select></label>
+    <div class="sub">Access ends after</div><div class="chips">${[7, 14, 30].map((d) => `<button class="chip ${w.shareDays == d ? 'on' : ''}" data-a="set" data-arg="w.shareDays=${d}">${d} days</button>`).join('')}</div>
+    ${btn('Share read-only', 'share')}<button class="btn ghost" data-a="set" data-arg="w.sheet=">Cancel</button></div></div>`;
+  if (w.sheet === 'delete') return `<div class="sheet"><div><b style="font-size:17px">Delete your account?</b><div class="alert red">This deletes all your shifts, stubs, evidence and claims within 24 hours. Download your data first if you need it.</div>${btn('Yes, delete everything', 'deleteAcct', 'danger')}<button class="btn ghost" data-a="set" data-arg="w.sheet=">Cancel</button></div></div>`;
+  return '';
+}
+function wEvidence() {
+  const w = S.w;
+  let items = [['Oct 12', 'schedule', 'Posted schedule photo', 'Week of Oct 12 · your row confirmed'], ['Oct 7', 'message', 'Manager text: “stay till close?”', 'Attached to Wed Oct 7 shift'], ['Oct 1', 'stub', 'Pay stub Sep 14 – Sep 27', 'Checked: short $107.70'], ['Sep 17', 'stub', 'Pay stub Aug 31 – Sep 13', 'Checked: short $265.66'], ['Sep 8', 'note', 'Note: did not work Labour Day', 'Written the day after'], ['Sep 3', 'schedule', 'Posted schedule photo', 'Week of Sep 7']];
+  if (w.newStub) items.unshift(['Oct 15', 'stub', 'Pay stub Sep 28 – Oct 11', 'Checked: short $89.75']);
+  if (w.scan === 'done') items.unshift(['Oct 15', 'schedule', 'Posted schedule photo', 'Week of Oct 19 · your row confirmed']);
+  if (Object.keys(w.edits).length) items.unshift(['Oct 15', 'note', 'Shift times changed', 'Reason given · original kept']);
+  w.notes.forEach((n) => items.unshift(['Oct 15', 'note', 'Note', n]));
+  if (w.reqDone) items.unshift(['Oct 15', 'stub', 'Sent to caseworker: Sep 17 stub', 'Answered document request']);
+  const f = w.ev, shown = items.filter((i) => f === 'all' || i[1] === f);
+  const ic = { stub: '🧾', schedule: '📅', message: '💬', note: '📝' };
+  return `${back('More', 'go', 'more')}<h1 class="s">Evidence vault</h1><div class="sub">Everything you add is saved here automatically and listed in your claim package (FR-15).</div>
+  <div class="chips">${[['all', 'All'], ['stub', 'Pay stubs'], ['schedule', 'Schedules'], ['message', 'Messages'], ['note', 'Notes']].map(([k, l]) => `<button class="chip ${f === k ? 'on' : ''}" data-a="set" data-arg="w.ev=${k}">${l}</button>`).join('')}</div>
+  <div class="list">${shown.map(([d, t, a, b]) => `<div class="li" style="justify-content:flex-start"><span style="font-size:20px">${ic[t]}</span><div style="flex:1"><b>${esc(a)}</b><div class="sub">${esc(b)}</div></div><span class="sub">${d}</span></div>`).join('')}</div>
+  <div style="display:flex;gap:8px"><input data-b="w.noteDraft" value="${esc(w.noteDraft)}" placeholder="Add a note about today…" style="flex:1;height:44px;border:1px solid var(--line);border-radius:10px;padding:0 12px"><button class="btn sm" data-a="addNote">Add</button></div>`;
+}
+function wMessages() {
+  const w = S.w;
+  return `${back('More', 'go', 'more')}<h1 class="s">Aisha · Parkdale Community Legal Services</h1><div class="sub">Only you and this clinic can see these messages (FR-14).</div>
+  <div style="display:flex;flex-direction:column;gap:8px">${w.msgs.map((m) => m.req ? `<div class="bubble them">${esc(m.t)}<div class="alert gold" style="margin-top:8px;padding:10px;flex-direction:column;gap:8px"><b>Document request: Sep 17 pay stub</b>${w.reqDone ? tag('Sent ✓', 't-ok') : `<button class="btn sm gold" data-a="reqDone">Upload and send</button>`}</div></div>` : `<div class="bubble ${m.me ? 'me' : 'them'}">${esc(m.t)}</div>`).join('')}</div>
+  <div style="display:flex;gap:8px;margin-top:auto"><input data-b="w.msgDraft" value="${esc(w.msgDraft)}" placeholder="Message Aisha" style="flex:1;height:44px;border:1px solid var(--line);border-radius:10px;padding:0 12px"><button class="btn sm" data-a="sendMsg">Send</button></div>`;
+}
+function wJobs() {
+  const w = S.w, total = w.tips.reduce((a, t) => a + t.a, 0);
+  return `${back('More', 'go', 'more')}<h1 class="s">Jobs and tips</h1>
+  <div class="list"><div class="li"><div><b>Harbour Grill · Server</b><div class="sub">$17.95/h · since Mar 3, 2025 · bi-weekly</div></div>${tag('4%', 't-ok')}</div><div class="li"><div><b>Daily Grind · Barista</b><div class="sub">$18.25/h · since Jun 9, 2026 · weekly</div></div>${tag('4%', 't-ok')}</div></div>
+  <div class="alert grey" style="font-size:13px">Each job is checked separately. Hours at two employers are never added together for overtime.</div>
+  <div class="card"><div class="row"><b>Tips · Harbour Grill</b><b>${money(total)}</b></div><div class="sub" style="margin:4px 0 8px">Tips are not wages under the ESA: they never count toward minimum wage, overtime or vacation pay.</div>
+  ${w.tips.map((t) => `<div class="row" style="padding:4px 0;border-top:1px solid #E6EEE9"><span>${esc(t.d)}</span><span>${money(t.a)}</span></div>`).join('')}
+  <div style="display:flex;gap:8px;margin-top:8px"><input data-b="w.tipDraft" value="${esc(w.tipDraft)}" inputmode="decimal" placeholder="Today’s tips ($)" style="flex:1;height:40px;border:1px solid var(--line);border-radius:10px;padding:0 10px"><button class="btn sm" data-a="addTip">Add</button></div></div>
+  <button class="btn ghost" data-a="toast" data-arg="Add job: employer, address, start date, rate and pay schedule (same form as sign-up).">+ Add another job</button>`;
+}
+function wProfile() {
+  const w = S.w, n = w.notif;
+  const tg = (k, l) => `<div class="li"><span>${l}</span><button class="toggle ${n[k] ? 'on' : ''}" data-a="notif" data-arg="${k}" aria-label="${l}"></button></div>`;
+  return `${back('More', 'go', 'more')}<div class="row" style="justify-content:flex-start;gap:12px"><div style="width:54px;height:54px;border-radius:27px;background:var(--g9);color:var(--gold);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:19px">MS</div><div><h1 class="s">${esc(w.su.name)}</h1><div class="sub">Worker account · joined Sep 2026</div></div></div>
+  <h2 class="s">Personal info</h2><div class="list">${[['Email', w.su.email], ['Phone', '(416) 555-0142'], ['Language', 'English']].map(([k, v]) => `<div class="li"><span class="sub">${k}</span><b>${esc(v)}</b></div>`).join('')}</div>
+  <h2 class="s">Sign-in and security</h2><div class="list"><div class="li"><span>This phone · Face ID</span><span class="sub">Signed in now</span></div>${w.othersOut ? '' : '<div class="li"><span>Laptop · Chrome</span><span class="sub">Last used Oct 11</span></div>'}<div class="li"><button class="btn sm ghost" data-a="set" data-arg="w.othersOut=1">${w.othersOut ? 'Other devices signed out' : 'Sign out other devices'}</button></div></div>
+  <h2 class="s">Notifications</h2><div class="list">${tg('shift', 'Shift start and end reminders')}${tg('pay', 'New paycheck checked')}${tg('deadline', 'Claim deadline reminders')}</div>
+  <h2 class="s">Privacy and data</h2><div class="card" style="display:flex;flex-direction:column;gap:10px"><div class="row"><div><b>Shared with</b><div class="sub">${w.shared ? esc(w.shareClinic) + ' (Harbour Grill claim only)' : 'No one. Your data is private.'}</div></div>${w.shared ? '<button class="btn sm danger" data-a="unshare">Stop sharing</button>' : ''}</div>
+  <div class="sub">Your employer never sees your PayCheck data.</div>
+  <button class="btn ${w.exported ? 'done' : 'outline'}" data-a="set" data-arg="w.exported=1">${w.exported ? '✓ Your data is ready to download (ZIP)' : 'Download all my data'}</button>
+  <button class="btn danger" data-a="set" data-arg="w.sheet=delete">Delete my account</button></div>`;
+}
+
+/* =================== CLINIC =================== */
+const CASES0 = [
+  { id: 'maria', name: 'Maria Santos', job: 'Server · Harbour Grill', owed: 642.61, left: '22 months', rec: '29 live · 1 edited · 1 added later', ok: [true, true, true, true],
+    rules: [['Overtime (34 h)', 305.15, '34 h × ($26.93 − $17.95)'], ['Labour Day holiday pay', 157.96, '4-week wages $3,159.20 ÷ 20'], ['Vacation pay', 179.5, '4% × $4,487.50'], ['Minimum wage', 0, 'paid at or above minimum']] },
+  { id: 'daniel', name: 'Daniel Okafor', job: 'Warehouse associate · NorthPort Logistics', owed: 1184.4, left: '18 months', rec: '61 live · 3 added later', ok: [true, true, true, true],
+    rules: [['Overtime (88 h)', 822.8, '88 h × $9.35'], ['Vacation pay (6%)', 361.6, '6% × wages − 4% paid'], ['Public holiday pay', 0, 'paid'], ['Minimum wage', 0, 'OK']] },
+  { id: 'lin', name: 'Lin Chen', job: 'Cleaner · BrightSpace Cleaning', owed: 486.2, left: '2 months', rec: '12 live · 9 added later', ok: [true, true, false, true],
+    rules: [['Minimum wage', 214.2, '($17.60 − $16.50) × 194.7 h'], ['Overtime', 0, 'under 44 h'], ['Public holiday pay', 272.0, 'Victoria Day + Canada Day, not paid'], ['Vacation pay', 0, 'paid']] }];
+function cases() {
+  const c = S.c, list = [...CASES0];
+  INTAKE.filter((i) => c.assigned[i.id] === 'Aisha').forEach((i) => list.unshift({ id: i.id, name: i.name, job: i.job, owed: i.owed, left: '20 months', rec: '38 live · 1 added later', ok: [true, true, false, true], rules: [[i.issue, i.owed, 'see worker’s calculation'], ['Other rules', 0, 'OK']] }));
+  return list;
+}
+const INTAKE = [{ id: 'k1', name: 'Jasmine Patel', job: 'Retail associate · FreshMart', issue: 'Overtime', owed: 412.3, when: 'Shared today' }, { id: 'k2', name: 'Carlos Mendes', job: 'Line cook · Bistro 21', issue: 'Public holiday pay', owed: 236.9, when: 'Shared yesterday' }, { id: 'k3', name: 'Grace Kim', job: 'Barista · BeanHouse', issue: 'Vacation pay', owed: 158.4, when: 'Shared 2 days ago' }, { id: 'k4', name: 'Ahmed Yusuf', job: 'Security guard · SafeWatch', issue: 'Minimum wage', owed: 96.0, when: 'Shared 3 days ago' }];
+function staffLogin(r, title, sub, email) {
+  const x = S[r], ok = /^\d{6}$/.test(x.code);
+  return `<div class="login" style="background:${r === 'c' ? 'var(--g9)' : '#17211C'}"><div class="box">
+  <div style="display:flex;align-items:center;gap:10px;font-size:21px;font-weight:800;color:var(--g9)"><span class="chk">✓</span>PayCheck ${tag(r === 'c' ? 'CLINIC' : 'ADMIN', r === 'c' ? 't-ok' : 't-med')}</div>
+  ${x.auth === 'login' ? `<h2 style="margin:0">${title}</h2><div class="sub">${sub}</div><label class="field">Work email<input value="${email}"></label><label class="field">Password<input type="password" value="demo-password"></label>${btn('Continue', 'set', '', r + '.auth=code')}`
+    : `<h2 style="margin:0">Two-step check</h2><div class="sub">Enter the 6-digit code from your authenticator app. Staff accounts always need this step (FR-20).</div><input class="codein" data-b="${r}.code" data-render="1" value="${esc(x.code)}" maxlength="6" inputmode="numeric" placeholder="000000" style="border:1.5px solid var(--g7);border-radius:12px">${btn(ok ? 'Verify and sign in' : 'Enter any 6 digits', 'set', ok ? '' : 'dis', ok ? r + '.auth=in' : '')}`}
+  <div class="sub" style="border-top:1px solid #E6EEE9;padding-top:10px">Demo: any password and any 6 digits work.</div></div></div>`;
+}
+function clinic() {
+  const c = S.c;
+  if (c.auth !== 'in') return staffLogin('c', 'Clinic sign-in', 'Caseworker accounts are created only by admin invite. You see only cases workers choose to share.', 'aisha.r@parkdalelegal.example');
+  const nUn = INTAKE.filter((i) => !c.assigned[i.id]).length;
+  const tabs = [['intake', `Intake queue (${nUn})`], ['cases', 'My cases'], ['messages', 'Messages'], ['reports', 'Reports'], ['profile', 'My profile']];
+  const body = { intake: cIntake, cases: cCases, messages: cMessages, reports: cReports, profile: () => staffProfile('c') }[c.tab]();
+  return `<div class="desk"><div class="dhead"><div style="display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px"><span class="chk">✓</span>PayCheck ${tag('CLINIC', 't-ok')}</div><div style="display:flex;gap:14px;align-items:center;font-size:13px">Aisha Rahman · Caseworker · Parkdale Community Legal Services<button class="btn sm ghost" data-a="set" data-arg="c.auth=login">Sign out</button></div></div>
+  <div class="dnav">${tabs.map(([k, l]) => `<button class="${c.tab === k ? 'on' : ''}" data-a="set" data-arg="c.tab=${k}">${l}</button>`).join('')}</div><div class="dbody">${body}</div>${S.toast ? `<div class="dtoast">${esc(S.toast)}</div>` : ''}</div>`;
+}
+function cIntake() {
+  const c = S.c;
+  return `<div><h1 class="s" style="font-size:26px">Intake queue</h1><div class="sub">Cases workers shared with your clinic, oldest first. Assign each one to a caseworker (FR-13).</div></div>
+  <table class="t"><tr><th>Worker</th><th>Main issue</th><th>May be owed</th><th>Shared</th><th></th></tr>${INTAKE.map((i) => `<tr><td><b>${i.name}</b><div class="sub">${i.job}</div></td><td>${i.issue}</td><td><b>${money(i.owed)}</b></td><td class="sub">${i.when}</td><td style="text-align:right">${c.assigned[i.id] ? `${tag('Assigned to ' + c.assigned[i.id], 't-ok')} ${c.assigned[i.id] === 'Aisha' ? `<button class="btn sm outline" data-a="openCase" data-arg="${i.id}">Open case ›</button>` : ''}` : `<button class="btn sm" data-a="assign" data-arg="${i.id}|Aisha">Me (Aisha)</button> <button class="btn sm ghost" data-a="assign" data-arg="${i.id}|Omar">Omar</button>`}</td></tr>`).join('')}</table>`;
+}
+function cCases() {
+  const c = S.c, L = cases(), sel = L.find((x) => x.id === c.sel) || L[0], st = (id) => c.status[id] || 'Needs review';
+  const pill = (s) => tag(s, s === 'Filed' ? 't-high' : s === 'Ready to file' ? 't-ok' : s === 'Needs more info' ? 't-warn' : 't-fut');
+  const evNames = ['Posted schedules', 'Shift log', 'Pay stubs', 'Employer details'];
+  const evDetail = { 'Posted schedules': [['6 weekly photos', 'AI read · worker confirmed'], ['Coworker rows', 'never stored']], 'Shift log': [['Records', sel.rec], ['Live entries', 'server time, not phone time'], ['Edits', 'original time and reason kept']], 'Pay stubs': sel.ok[2] ? [['All stubs uploaded', 'each checked on upload']] : [['3 of 6 stubs uploaded', 'periods without a stub are unconfirmed']], 'Employer details': [['Employer', 'name and address from worker profile'], ['Start date', 'sets vacation pay 4% / 6%']] };
+  const notes = c.notes[sel.id] || [], reqKey = sel.id + c.ev;
+  return `<div class="grid2"><div><h1 class="s" style="font-size:24px;margin-bottom:10px">My cases</h1><table class="t"><tr><th>Worker</th><th>Owed</th><th>Time left</th><th>Status</th></tr>${L.map((x) => `<tr class="click ${x.id === sel.id ? 'sel' : ''}" data-a="selCase" data-arg="${x.id}"><td><b>${x.name}</b><div class="sub">${x.job}</div></td><td>${money(x.owed)}</td><td style="color:${x.left.startsWith('2 ') ? 'var(--red);font-weight:700' : 'inherit'}">${x.left}</td><td>${pill(st(x.id))}</td></tr>`).join('')}</table></div>
+  <div class="card" style="display:flex;flex-direction:column;gap:12px;padding:18px"><div class="row" style="align-items:flex-start"><div><div class="sub">Case review · read-only</div><h2 style="margin:2px 0">${sel.name}</h2><div class="sub">${sel.job}</div></div>${pill(st(sel.id))}</div>
+  <div class="kpis"><div class="stat"><div class="k">May be owed</div><div class="v red">${money(sel.owed)}</div></div><div class="stat"><div class="k">Time left to file</div><div class="v" style="${sel.left.startsWith('2 ') ? 'color:var(--red)' : ''}">${sel.left}</div></div><div class="stat"><div class="k">Shift records</div><div class="sub" style="margin-top:6px;color:var(--ink)">${sel.rec}</div></div></div>
+  <b>Amounts by ESA rule</b>${sel.rules.map(([r, a, h]) => `<div class="row" style="border-bottom:1px solid #E6EEE9;padding:6px 0"><div>${r}<div class="mono sub" style="font-size:11.5px">${h}</div></div><b>${a ? money(a) : 'OK'}</b></div>`).join('')}
+  <b>Evidence</b><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">${evNames.map((e, i) => `<button class="alert ${sel.ok[i] ? 'green' : 'red'}" style="justify-content:space-between;${c.ev === e ? 'outline:2px solid var(--g9)' : ''}" data-a="set" data-arg="c.ev=${e}"><b>${e}</b><span>${sel.ok[i] ? 'Complete' : 'Missing'} ›</span></button>`).join('')}</div>
+  ${c.ev ? `<div class="card" style="background:#F7F9F8">${(evDetail[c.ev] || []).map(([a, b]) => `<div class="row" style="padding:4px 0;border-bottom:1px solid #E6EEE9"><span>${a}</span><span class="sub">${b}</span></div>`).join('')}${c.ev === 'Pay stubs' && !sel.ok[2] ? `<button class="btn sm ${c.reqSent[reqKey] ? 'done' : 'gold'}" style="margin-top:8px" data-a="set" data-arg="c.reqSent.${reqKey}=1">${c.reqSent[reqKey] ? 'Request sent to ' + sel.name.split(' ')[0] : 'Ask ' + sel.name.split(' ')[0] + ' to upload the missing stubs'}</button>` : ''}</div>` : ''}
+  <b>Clinic notes <span class="sub" style="font-weight:400">· private to the clinic</span></b>${notes.map((n) => `<div class="alert gold" style="font-size:13px">${esc(n)}</div>`).join('')}
+  <div style="display:flex;gap:8px"><input data-b="c.noteDraft" value="${esc(c.noteDraft)}" placeholder="Add a note for this case" style="flex:1;height:40px;border:1px solid var(--line);border-radius:10px;padding:0 12px"><button class="btn sm" data-a="cNote">Add note</button></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">${['Needs more info', 'Ready to file', 'Filed'].map((s) => `<button class="btn sm ${st(sel.id) === s ? '' : 'ghost'}" data-a="cStatus" data-arg="${s}">${s === 'Ready to file' ? 'Mark ready to file' : s === 'Filed' ? 'Mark as filed' : 'Needs more info'}</button>`).join('')}<button class="btn sm outline" data-a="set" data-arg="c.tab=messages">Message worker</button></div></div></div>`;
+}
+function cMessages() {
+  const c = S.c;
+  return `<h1 class="s" style="font-size:24px">Messages · Maria Santos</h1><div class="card" style="max-width:760px;display:flex;flex-direction:column;gap:8px">
+  ${[{ me: true, t: S.w.msgs[0].t }, { me: true, t: S.w.msgs[1].t, req: true }].concat(c.msgs).map((m) => `<div class="bubble ${m.me ? 'me' : 'them'}">${esc(m.t)}${m.req ? '<div style="margin-top:6px">' + tag('Document request: Sep 17 pay stub · Open', 't-warn') + '</div>' : ''}</div>`).join('')}
+  <div style="display:flex;gap:8px;margin-top:8px"><input data-b="c.msgDraft" value="${esc(c.msgDraft)}" placeholder="Write to Maria" style="flex:1;height:44px;border:1px solid var(--line);border-radius:10px;padding:0 12px"><button class="btn sm" data-a="cSend">Send</button><button class="btn sm gold" data-a="toast" data-arg="Document request form: describe the document; Maria gets a card to upload it.">Request document</button></div></div>`;
+}
+function cReports() {
+  const k = [['Cases opened', '64'], ['Claims filed', '41'], ['Wages claimed', '$39,550'], ['Avg. days to file', '12']];
+  const hb = (l, v, m) => `<div class="hbar"><span>${l}</span><div class="track"><div class="fill" style="width:${(v / m) * 100}%"></div></div><b>${v}</b></div>`;
+  return `<div class="alert grey">${tag('Future phase', 't-fut')} Clinic reports are designed but not built in Capstone II (FR-F1). Example data.</div>
+  <div class="kpis">${k.map(([a, b]) => `<div class="stat"><div class="k">${a}</div><div class="v">${b}</div></div>`).join('')}</div>
+  <div class="card"><b>Cases by main issue</b>${hb('Overtime', 31, 31)}${hb('Public holiday pay', 14, 31)}${hb('Vacation pay', 12, 31)}${hb('Minimum wage', 7, 31)}</div>`;
+}
+function staffProfile(r) {
+  const isC = r === 'c';
+  const rows = isC ? [['Email', 'aisha.r@parkdalelegal.example'], ['Clinic', 'Parkdale Community Legal Services'], ['Role', 'Caseworker'], ['Joined', 'By admin invite, Sep 2026'], ['Can see', 'Only cases workers share with this clinic']] : [['Email', 'admin@paycheck.example'], ['Role', 'Administrator'], ['Can do', 'Edit ESA rule values, invite and deactivate caseworkers, read the audit log'], ['Cannot do', 'Read any worker’s shifts, stubs or claims']];
+  return `<div class="grid2"><div class="card"><h2 style="margin-top:0">${isC ? 'Aisha Rahman' : 'System administrator'}</h2>${rows.map(([a, b]) => `<div class="row" style="padding:8px 0;border-bottom:1px solid #E6EEE9"><span class="sub">${a}</span><b style="text-align:right">${b}</b></div>`).join('')}</div>
+  <div class="card"><h3 style="margin-top:0">Sign-in and security</h3><div class="row" style="padding:6px 0"><span>Two-step login</span><b style="color:#155C3F">On · authenticator app</b></div><div class="row" style="padding:6px 0"><span>Session timeout</span><b>30 minutes idle</b></div><div class="row" style="padding:6px 0"><span>This computer · Chrome</span><span class="sub">Signed in now</span></div></div></div>`;
+}
+
+/* =================== ADMIN =================== */
+function admin() {
+  const a = S.a;
+  if (a.auth !== 'in') return staffLogin('a', 'Admin sign-in', 'Admin access is limited to the PayCheck team. Every action is written to the audit log.', 'admin@paycheck.example');
+  const tabs = [['rules', 'ESA rules'], ['holidays', 'Public holidays'], ['users', 'Clinics and caseworkers'], ['audit', 'Audit log'], ['insights', 'Insights'], ['profile', 'My profile']];
+  const body = { rules: aRules, holidays: aHolidays, users: aUsers, audit: aAudit, insights: aInsights, profile: () => staffProfile('a') }[a.tab]();
+  return `<div class="desk"><div class="dhead admin"><div style="display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px"><span class="chk">✓</span>PayCheck ${tag('ADMIN', 't-med')}</div><div style="display:flex;gap:14px;align-items:center;font-size:13px">System administrator · two-step login<button class="btn sm ghost" data-a="set" data-arg="a.auth=login">Sign out</button></div></div>
+  <div class="dnav">${tabs.map(([k, l]) => `<button class="${a.tab === k ? 'on' : ''}" data-a="set" data-arg="a.tab=${k}">${l}</button>`).join('')}</div><div class="dbody">${body}</div>${S.toast ? `<div class="dtoast">${esc(S.toast)}</div>` : ''}</div>`;
+}
+function aRules() {
+  const a = S.a;
+  return `<div><h1 class="s" style="font-size:26px">ESA rules</h1><div class="sub">Rule values are data with an effective date. A new value never overwrites the old one, so earlier pay periods keep the value in force at the time (FR-19).</div></div>
+  <table class="t"><tr><th>Rule</th><th>Current value</th><th>Effective</th><th>Earlier versions</th><th>ESA</th><th></th></tr>${a.rules.map((r) => { const cur = r.versions[r.versions.length - 1], ed = a.editing === r.id; return `<tr><td><b>${r.name}</b></td><td>${ed ? `<label class="field">New value<input data-b="a.draft" value="${esc(a.draft)}"></label><label class="field" style="margin-top:6px">Takes effect on<input type="date" data-b="a.eff" value="${esc(a.eff)}"></label><div class="sub" style="margin-top:6px">Pay periods before this date keep the old value.</div>` : `<span class="mono">${cur[0]}</span>`}</td><td>${cur[1]}</td><td class="sub">${r.versions.slice(0, -1).reverse().map((v) => `${v[0]} (from ${v[1]})`).join('<br>') || '–'}</td><td class="sub">${r.sec}</td><td style="text-align:right">${ed ? `<button class="btn sm" data-a="ruleSave">Save</button> <button class="link" data-a="set" data-arg="a.editing=">Cancel</button>` : `<button class="btn sm ghost" data-a="ruleEdit" data-arg="${r.id}">Edit</button>`}</td></tr>`; }).join('')}</table>`;
+}
+function aHolidays() {
+  const H = [['New Year’s Day', 'Fri, Jan 1, 2027'], ['Family Day', 'Mon, Feb 15, 2027'], ['Good Friday', 'Fri, Mar 26, 2027'], ['Victoria Day', 'Mon, May 24, 2027'], ['Canada Day', 'Thu, Jul 1, 2027'], ['Labour Day', 'Mon, Sep 6, 2027'], ['Thanksgiving', 'Mon, Oct 11, 2027'], ['Christmas Day', 'Sat, Dec 25, 2027'], ['Boxing Day', 'Sun, Dec 26, 2027']];
+  return `<div><h1 class="s" style="font-size:26px">Public holidays · 2027</h1><div class="sub">The 9 ESA public holidays used by the holiday pay rule. Civic Holiday is not an ESA public holiday.</div></div><table class="t"><tr><th>Holiday</th><th>Date</th></tr>${H.map(([a, b]) => `<tr><td>${a}</td><td>${b}</td></tr>`).join('')}</table>`;
+}
+function aUsers() {
+  const a = S.a;
+  const people = [['Aisha Rahman', 'Parkdale Community Legal Services', 'Active'], ['Omar Haddad', 'Parkdale Community Legal Services', 'Active'], ['Grace Liu', 'Workers’ Action Centre', 'Active']].concat(a.invited.map((e) => [e, 'Invite sent · expires in 7 days', 'Invite pending']));
+  return `<div><h1 class="s" style="font-size:26px">Clinics and caseworkers</h1><div class="sub">Caseworkers join only by invite and must set up two-step login (FR-20).</div></div>
+  <div class="kpis"><div class="stat"><div class="k">Parkdale Community Legal Services</div><div class="v">2</div><div class="sub">caseworkers</div></div><div class="stat"><div class="k">Workers’ Action Centre</div><div class="v">1</div><div class="sub">caseworker</div></div></div>
+  <table class="t"><tr><th>Name</th><th>Clinic</th><th>Status</th><th></th></tr>${people.map(([n, c, s]) => { const off = a.off[n], stt = off ? 'Deactivated' : s; return `<tr><td><b>${esc(n)}</b></td><td class="sub">${esc(c)}</td><td>${tag(stt, stt === 'Active' ? 't-ok' : stt === 'Deactivated' ? 't-fut' : 't-warn')}</td><td style="text-align:right">${s === 'Active' ? `<button class="btn sm ghost" data-a="toggleOff" data-arg="${esc(n)}">${off ? 'Reactivate' : 'Deactivate'}</button>` : ''}</td></tr>`; }).join('')}</table>
+  <div style="display:flex;gap:8px;max-width:620px"><input data-b="a.invite" value="${esc(a.invite)}" placeholder="caseworker@clinic.example" style="flex:1;height:44px;border:1px solid var(--line);border-radius:10px;padding:0 12px"><button class="btn sm" data-a="invite">Send invite</button></div>
+  <div class="sub">Deactivating a caseworker ends their sessions at once and returns their open cases to the clinic’s intake queue.</div>`;
+}
+function aAudit() {
+  return `<div><h1 class="s" style="font-size:26px">Audit log</h1><div class="sub">Append-only. Every admin change, case share and status change is recorded.</div></div><table class="t"><tr><th>Action</th><th>By</th><th>When</th></tr>${S.a.audit.map(([w, d]) => `<tr><td>${esc(w)}</td><td class="sub">System administrator</td><td class="sub">${d}</td></tr>`).join('')}</table>`;
+}
+function aInsights() {
+  const hb = (l, v, m) => `<div class="hbar"><span>${l}</span><div class="track"><div class="fill" style="width:${(v / m) * 100}%"></div></div><b>${v}%</b></div>`;
+  return `<div class="alert grey">${tag('Future phase', 't-fut')} Anonymous insights are designed but not built in Capstone II (FR-F1). Example data, no names; groups under 10 workers are hidden.</div>
+  <div class="grid2"><div class="card"><b>Problems found, by rule</b>${hb('Overtime', 61, 61)}${hb('Public holiday pay', 22, 61)}${hb('Vacation pay', 12, 61)}${hb('Minimum wage', 5, 61)}</div><div class="card"><b>Paychecks with an issue, by industry</b>${hb('Restaurants', 34, 34)}${hb('Retail', 21, 34)}${hb('Warehousing', 19, 34)}${hb('Cleaning', 17, 34)}</div></div>`;
+}
+
+/* =================== LANDING =================== */
+function landing() {
+  return `<div class="landing"><div class="sub" style="font-weight:700;letter-spacing:.5px">COMP3059 CAPSTONE PROJECT I · TEAM T03 · SPRINT 4</div>
+  <h1>PayCheck – interactive mock-up</h1>
+  <p class="lead">PayCheck helps Ontario hourly workers prove they were underpaid and claim it. It has three connected parts. Choose a role to try it – every button works, and all data is invented test data based on our Sprint 3 worked examples.</p>
+  <div class="cards3">
+   <button class="rolecard" data-a="role" data-arg="worker"><h3>📱 Worker app</h3><div class="sub">Maria, restaurant server · phone (PWA)</div><ul><li>Sign up and add a job (try a rate under $17.95)</li><li>Start / End shift, fix a shift with a reason</li><li>Add the Oct 15 pay stub and see the check</li><li>Show the math, rights guide, screening</li><li>Claim package, share with a clinic, tracker</li><li>Evidence vault, messages, jobs and tips, profile</li></ul><span class="btn">Open worker app</span></button>
+   <button class="rolecard" data-a="role" data-arg="clinic"><h3>💼 Clinic workspace</h3><div class="sub">Aisha, caseworker · desktop</div><ul><li>Two-step sign-in (any 6 digits)</li><li>Intake queue: assign and open a case</li><li>Review amounts, evidence and math</li><li>Private notes, document requests, status</li><li>Messages with the worker</li></ul><span class="btn">Open clinic workspace</span></button>
+   <button class="rolecard" data-a="role" data-arg="admin"><h3>⚙️ Admin console</h3><div class="sub">PayCheck administrator · desktop</div><ul><li>Two-step sign-in</li><li>Edit an ESA rule with an effective date</li><li>Public holidays</li><li>Invite or deactivate caseworkers</li><li>Audit log</li></ul><span class="btn">Open admin console</span></button>
+  </div>
+  <div class="card"><b>Priority labels (from Sprint 3)</b><div class="legend" style="margin-top:8px">${tag('High – MVP', 't-high')} ${tag('Medium', 't-med')} ${tag('Future phase', 't-fut')}</div><div class="sub" style="margin-top:8px">Screens marked “Future phase” (AI reading, AI assistant, more languages, clinic reports, insights) show the design only. Requirement IDs (FR-xx) match F26_T03_Requirements_Analysis_Design.</div></div>
+  <div class="sub" style="margin-top:16px">Tip: use the role buttons in the top bar to switch at any time. “Restart demo” resets everything.</div></div>`;
+}
+
+/* =================== render + actions =================== */
+function render() {
+  const sc = document.getElementById('scroll'), top = sc ? sc.scrollTop : 0;
+  const roles = [['home', 'Start'], ['worker', 'Worker'], ['clinic', 'Clinic'], ['admin', 'Admin']];
+  const bar = `<div class="demobar"><div class="brand"><span class="chk">✓</span>PayCheck mock-up · T03</div><div class="roles">${roles.map(([k, l]) => `<button class="${S.role === k ? 'on' : ''}" data-a="role" data-arg="${k}">${l}</button>`).join('')}<button data-a="reset">Restart demo</button></div></div>`;
+  const view = { home: landing, worker, clinic, admin }[S.role]();
+  $root.innerHTML = bar + view;
+  const sc2 = document.getElementById('scroll'); if (sc2 && render.keep) sc2.scrollTop = top; render.keep = false;
+}
+const A = {
+  role: (r) => { S.role = r; window.scrollTo(0, 0); },
+  reset: () => { S = JSON.parse(JSON.stringify(INIT)); },
+  toast: (t) => toast(t),
+  set: (arg) => { const i = arg.indexOf('='); let v = arg.slice(i + 1); up(arg.slice(0, i), v === '1' ? true : v === '' ? null : v); render.keep = true; },
+  go: (s) => { const w = S.w; w.screen = s; if (['home', 'shifts', 'pay', 'guide', 'more'].includes(s)) w.tab = s; if (s === 'messages') w.unread = false; },
+  tab: (t) => { S.w.tab = t; S.w.screen = t; if (t === 'guide') S.w.guide = null; },
+  signin: () => { if (S.w.consent) S.w.screen = 'home', S.w.tab = 'home'; },
+  signout: () => { S.w.screen = 'signin'; },
+  signupStart: () => { S.w.screen = 'signup'; S.w.su.step = 1; S.w.consent = false; },
+  suBack: () => { if (S.w.su.step === 1) S.w.screen = 'signin'; else S.w.su.step--; },
+  suNext: () => { const su = S.w.su; if (su.step === 1 && !(S.w.consent && su.name.trim() && /.+@.+\..+/.test(su.email))) return; su.step++; },
+  suDone: () => { S.w.screen = 'home'; S.w.tab = 'home'; toast('Welcome, ' + S.w.su.name.split(' ')[0] + '! Your job is set up.'); },
+  shiftToggle: () => { const w = S.w; if (!w.onShift) { w.onShift = true; w.shiftStart = '10:58'; toast('Shift started at 10:58 – server time, not your phone’s.'); } else { w.onShift = false; w.weekHours += 10; toast('Shift ended: 10 h logged · ' + w.weekHours + ' h this week.'); } },
+  openShift: (id) => { S.w.openShift = S.w.openShift === id ? null : id; render.keep = true; },
+  editStart: () => { const r = shiftRows().find((x) => x.id === S.w.openShift); S.w.edit = { id: r.id, st: r.st, en: r.en, reason: null, proof: false }; S.w.screen = 'edit'; },
+  editSave: () => { const e = S.w.edit; if (!e.reason || toMin(e.en) <= toMin(e.st)) return; S.w.edits[e.id] = { ...e }; S.w.screen = 'shifts'; S.w.tab = 'shifts'; S.w.seg = 'log'; toast('Saved. The original time is kept in the history.'); },
+  scanSave: () => { if (!S.w.scanPick) return; S.w.scan = 'done'; },
+  stubStart: () => { S.w.stub = 'photo'; S.w.stubHours = null; S.w.stubWarn = false; S.w.screen = 'stub'; },
+  stubRead: () => { if (S.w.stub === 'reading') return; S.w.stub = 'reading'; setTimeout(() => { S.w.stub = 'review'; render(); }, 1200); },
+  stubH: (h) => { if (h === '93') S.w.stubWarn = true; else { S.w.stubHours = 98; S.w.stubWarn = false; } },
+  stubCheck: () => { if (!S.w.stubHours) return; S.w.newStub = true; S.w.stub = 'none'; S.w.screen = 'pay'; S.w.tab = 'pay'; S.w.openPeriod = 'p3'; toast('Checked against 4 ESA rules: short $89.75 (overtime).'); },
+  openPeriod: (p) => { S.w.openPeriod = S.w.openPeriod === p ? null : p; if (S.w.screen !== 'pay') { S.w.screen = 'pay'; S.w.tab = 'pay'; S.w.openPeriod = p; } else render.keep = true; },
+  math: (k) => { S.w.mathOpen = S.w.mathOpen === k ? null : k; render.keep = true; },
+  claimCreate: () => { S.w.claim = 1; S.w.screen = 'package'; },
+  claimNext: () => { const w = S.w; if (w.claim === 1 && !w.shared) w.claim = 3; else w.claim = Math.min(4, w.claim + 1); render.keep = true; },
+  sheet: (s) => { S.w.sheet = s; },
+  share: () => { S.w.shared = true; S.w.sheet = null; if (S.w.claim < 2) S.w.claim = 1; toast('Shared read-only with ' + S.w.shareClinic + '.'); },
+  unshare: () => { S.w.shared = false; toast('Sharing stopped. The clinic lost access immediately.'); },
+  deleteAcct: () => { S.w.sheet = null; S.w.screen = 'signin'; S.w.consent = false; toast('Account deletion requested. Everything is removed within 24 hours.'); },
+  addNote: () => { const v = S.w.noteDraft.trim(); if (v) { S.w.notes.unshift(v); S.w.noteDraft = ''; } },
+  reqDone: () => { S.w.reqDone = true; S.w.msgs.push({ me: true, t: 'Done – I uploaded the Sep 17 stub.' }); },
+  sendMsg: () => { const v = S.w.msgDraft.trim(); if (v) { S.w.msgs.push({ me: true, t: v }); S.w.msgDraft = ''; } },
+  addTip: () => { const v = parseFloat(S.w.tipDraft); if (v > 0) { S.w.tips.unshift({ d: 'Today', a: v }); S.w.tipDraft = ''; } },
+  notif: (k) => { S.w.notif[k] = !S.w.notif[k]; render.keep = true; },
+  assign: (arg) => { const [id, who] = arg.split('|'); S.c.assigned[id] = who; toast('Assigned to ' + who + '.'); },
+  openCase: (id) => { S.c.sel = id; S.c.tab = 'cases'; S.c.ev = null; },
+  selCase: (id) => { S.c.sel = id; S.c.ev = null; },
+  cNote: () => { const v = S.c.noteDraft.trim(), id = S.c.sel; if (v) { (S.c.notes[id] = S.c.notes[id] || []).push(v); S.c.noteDraft = ''; } },
+  cStatus: (s) => { S.c.status[S.c.sel] = s; toast('Status: ' + s + ' (written to the audit log).'); },
+  cSend: () => { const v = S.c.msgDraft.trim(); if (v) { S.c.msgs.push({ me: true, t: v }); S.c.msgDraft = ''; } },
+  ruleEdit: (id) => { const r = S.a.rules.find((x) => x.id === id); S.a.editing = id; S.a.draft = r.versions[r.versions.length - 1][0]; S.a.eff = '2027-10-01'; },
+  ruleSave: () => { const a = S.a, r = a.rules.find((x) => x.id === a.editing), d = new Date(a.eff + 'T00:00:00'); const ds = isNaN(d) ? a.eff : d.toLocaleDateString('en-CA', { month: 'short', day: 'numeric', year: 'numeric' }); const old = r.versions[r.versions.length - 1][0]; r.versions.push([a.draft, ds]); a.audit.unshift([`${r.name}: new version ${a.draft} effective ${ds} (previous ${old} kept for earlier pay periods)`, 'Today']); a.editing = null; toast('New rule version saved and logged.'); },
+  invite: () => { const v = S.a.invite.trim(); if (/.+@.+\..+/.test(v)) { S.a.invited.push(v); S.a.audit.unshift(['Caseworker invited: ' + v, 'Today']); S.a.invite = ''; toast('Invite sent. The link expires in 7 days.'); } else toast('Enter a valid email address.'); },
+  toggleOff: (n) => { const off = !S.a.off[n]; S.a.off[n] = off; S.a.audit.unshift([(off ? 'Deactivated ' : 'Reactivated ') + n + (off ? ' – sessions ended, open cases returned to intake' : ''), 'Today']); }
+};
+document.addEventListener('click', (e) => {
+  const el = e.target.closest('[data-a]'); if (!el) return;
+  if (el.classList.contains('dis')) return;
+  const f = A[el.dataset.a]; if (!f) return;
+  e.preventDefault(); f(el.dataset.arg || ''); if (el.dataset.a !== 'toast') render();
+});
+document.addEventListener('input', (e) => { const b = e.target.dataset.b; if (!b) return; let v = e.target.value; if (b.endsWith('.code')) v = v.replace(/\D/g, '').slice(0, 6); up(b, v); });
+document.addEventListener('change', (e) => {
+  const t = e.target;
+  if (t.dataset.c) { up(t.dataset.c, t.checked); render.keep = true; render(); return; }
+  if (t.dataset.b && (t.dataset.render || t.tagName === 'SELECT')) { up(t.dataset.b, t.value); render.keep = true; render(); }
+});
+document.addEventListener('keyup', (e) => { const t = e.target; if (t.dataset && t.dataset.b && t.dataset.b.endsWith('.code')) { const pos = t.value.length; render(); const n = document.querySelector('[data-b="' + t.dataset.b + '"]'); if (n) { n.focus(); n.setSelectionRange(pos, pos); } } });
+render();
+
+</script></body></html>
